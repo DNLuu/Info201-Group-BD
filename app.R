@@ -66,6 +66,9 @@ ui <- fluidPage(
       
       # Show a plot of the generated distribution
       mainPanel(
+         fluidRow(
+            plotOutput("sidePlot")
+         ),
          plotOutput("distPlot"),
          tabsetPanel(id = "tabs",
                     tabPanel("Solo", value = "Solo", tableOutput("solo")),
@@ -114,6 +117,17 @@ server <- function(input, output) {
    output$squad <- renderTable({
      getPlayerStats(input$player_name, input$tabs)  
    })  
+   
+   output$sidePlot <- renderPlot({
+     ggplot(erangelData) + 
+       geom_bar(aes(x = killed_by), fill = "red") +
+       scale_y_continuous(expand = c(0,0)) +
+       theme(axis.text = element_text(size = 4),
+             axis.title = element_text(size = 6, face = "bold"),
+             axis.ticks.x = element_blank(),
+             axis.ticks.y = element_blank()) +
+       coord_flip()
+   })
 }
 
 # Run the application 
