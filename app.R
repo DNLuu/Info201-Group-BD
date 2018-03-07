@@ -3,34 +3,75 @@ library("dplyr")
 library("ggplot2")
 library("png")
 library("grid")
+library(lubridate)
+
+Stats <- read.csv("Stats.csv", stringsAsFactors = FALSE) 
+erangelData <- read.csv("data_subset.csv")
+
+getPlayerStats <- function(playername, mode) {
+  if (mode == "Squad") {
+    size <- 4
+  } else if (mode == "Duo") {
+    size <- 2
+  } else {
+    size <- 1
+  }
+  Stats_Filtered <- subset(Stats, player_name == playername & party_size == size)
+  Stats_Player <- data.frame(matrix(ncol = 10, nrow = 1))
+  Column_names <- c("Games_Played", "Wins", "Top_5", "Top_10", "Most_Kills",
+                    "Average_Kills", "Average_Damage", "Average_Assists", "Average_Distance_Travelled", "Average_Time_Survived")
+  colnames(Stats_Player) <- Column_names
+  Stats_Player$Games_Played <- nrow(Stats_Filtered)
+  if(Stats_Player$Games_Played[1] == 0) {
+    Stats_Player[is.na(Stats_Player)] <- 0
+  } else {
+    Stats_Player$Average_Kills <- round(mean(Stats_Filtered$player_kills), digits = 2)
+    Stats_Player$Most_Kills <- max(Stats_Filtered$player_kills)
+    Stats_Player$Average_Assists <- round(mean(Stats_Filtered$player_assists), digits = 2)
+    Stats_Player$Average_Damage <- round(mean(Stats_Filtered$player_dmg), digits = 2)
+    
+    Stats_Filtered$Distance_Travelled <- mean(Stats_Filtered$player_dist_walk) + mean(Stats_Filtered$player_dist_ride)
+    Distance <- round(mean(Stats_Filtered$Distance_Travelled), digits = 2)
+    
+    Stats_Player$Average_Distance_Travelled <- paste(Distance,'m')
+    Stats_Player$Top_10 <- sum(Stats_Filtered$team_placement <= 10)
+    Stats_Player$Top_5 <- sum(Stats_Filtered$team_placement <= 5)
+    Stats_Player$Wins <- sum(Stats_Filtered$team_placement == 1)
+    Stats_Player$Average_Time_Survived <- paste(seconds_to_period(round(mean(Stats_Filtered$player_survive_time), digits = 0)))
+    colnames(Stats_Player) <- c("Games Played", "Games Won", "Placed Top 5", "Placed Top 10", "Most Kills",
+                                "Average Kills", "Average Damage", "Average Assists", "Average Distance Tavelled", "Average Time Survived")
+    return(Stats_Player)
+  }
+}
 
 # Define UI 
 ui <- fluidPage(
    
    # Application title
-   titlePanel("PUBG Deaths"),
+   titlePanel("PUBG Statistics"),
    
-   # Sidebar with a slider input for number of bins 
-   # sidebarLayout(
-   #   sidebarPanel(
-   #      sliderInput("bins",
-   #                  "Number of bins:",
-   #                  min = 1,
-   #                  max = 50,
-   #                  value = 30)
-   #   ),
+    sidebarLayout(
+      sidebarPanel(
+         selectInput("player_name",
+                    "Find Player Stats. (Select or search players name)", 
+                    choices = unique(Stats$player_name))
+      ),
       
       # Show a plot of the generated distribution
       mainPanel(
-         plotOutput("distPlot")
+         plotOutput("distPlot"),
+         tabsetPanel(id = "tabs",
+                    tabPanel("Solo", value = "Solo", tableOutput("solo")),
+                    tabPanel("Duo",value = "Duo", tableOutput("duo")),
+                    tabPanel("Squad", value = "Squad", tableOutput("squad"))
+        )
       )
+    )
    
 )
 
 # Define server 
 server <- function(input, output) {
-   erangelData <- read.csv("data_subset.csv")
-
    
    output$distPlot <- renderPlot({
       img <- readPNG("erangel.PNG")
@@ -41,7 +82,19 @@ server <- function(input, output) {
          annotation_custom(bg, xmin = 0,  xmax = 800000, ymin = -800000, ymax = 0) +
          geom_point(mapping = aes(x = victim_position_x * (800000/812800), y = victim_position_y * (800000/812800), color = "red"), alpha = 0.04) + #0.008
          xlim(0, 800000) + scale_y_reverse(lim=c(800000, 0))
-   }, height = 800, width = 1200) # size of map
+   }, height = 400, width = 600) # size of map
+
+   output$solo <- renderTable({
+    getPlayerStats(input$player_name, input$tabs)
+   })
+  
+   output$duo <- renderTable({
+    getPlayerStats(input$player_name, input$tabs) 
+   })
+  
+   output$squad <- renderTable({
+     getPlayerStats(input$player_name, input$tabs)  
+   })  
 }
 
 # Run the application 
