@@ -50,11 +50,18 @@ ui <- fluidPage(
    # Application title
    titlePanel("PUBG Statistics"),
    
+   includeCSS("styles.css"),
+   
     sidebarLayout(
       sidebarPanel(
          selectInput("player_name",
                     "Find Player Stats. (Select or search players name)", 
-                    choices = unique(Stats$player_name))
+                    choices = unique(Stats$player_name)),
+
+        tags$style(".well {background-color:#fff; 
+                         border-top: 3px solid #eda338;}"),
+        sliderInput("time", "Time In Game (in seconds):",
+                    60, 2201, value = c(100, 1300))
       ),
       
       # Show a plot of the generated distribution
@@ -73,17 +80,29 @@ ui <- fluidPage(
 # Define server 
 server <- function(input, output) {
    
-   output$distPlot <- renderPlot({
-      img <- readPNG("erangel.PNG")
-      bg <- rasterGrob(img, interpolate = FALSE, width=unit(1,"npc"), height=unit(1,"npc"))
-     
-      ggplot(data = erangelData) +
-         ggtitle("PUBG Deaths") +
-         annotation_custom(bg, xmin = 0,  xmax = 800000, ymin = -800000, ymax = 0) +
-         geom_point(mapping = aes(x = victim_position_x * (800000/812800), y = victim_position_y * (800000/812800), color = "red"), alpha = 0.04) + #0.008
-         xlim(0, 800000) + scale_y_reverse(lim=c(800000, 0))
-   }, height = 400, width = 600) # size of map
-
+  output$distPlot <- renderPlot({
+    img <- readPNG("erangel.PNG")
+    bg <- rasterGrob(img, interpolate = FALSE, width=unit(1,"npc"), height=unit(1,"npc"))
+    
+    mintime <- input$time[1]
+    maxtime <- input$time[2]
+    
+    timedata <- erangelData %>% filter(
+      time >= mintime,
+      time <= maxtime
+    )
+    
+    timedata <- as.data.frame(timedata)
+    
+    ggplot(data = timedata) +
+      theme(axis.title.x=element_blank(), axis.title.y=element_blank(),
+            axis.text.x=element_blank(), axis.text.y=element_blank(),
+            axis.ticks.x=element_blank(), axis.ticks.y=element_blank()) +
+      annotation_custom(bg, xmin = 0,  xmax = 800000, ymin = -800000, ymax = 0) +
+      geom_point(mapping = aes(x = victim_position_x * (800000/812800), y = victim_position_y * (800000/812800)), color = "red", alpha = 0.04) + #0.008
+      xlim(0, 800000) + scale_y_reverse(lim=c(800000, 0))
+  }, height = 400, width = 400) # size of map
+  
    output$solo <- renderTable({
     getPlayerStats(input$player_name, input$tabs)
    })

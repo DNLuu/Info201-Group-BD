@@ -1,0 +1,12 @@
+
+@import url("//fonts.googleapis.com/css?family=Montserrat:400,700");
+
+h1 {
+font-size: 25px;
+font-family: Montserrat;
+font-weight: 600;
+}
+
+body {
+  font-family: Montserrat;
+}
