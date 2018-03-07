@@ -66,15 +66,20 @@ ui <- fluidPage(
       
       # Show a plot of the generated distribution
       mainPanel(
-         plotOutput("distPlot"),
-         tabsetPanel(id = "tabs",
-                    tabPanel("Solo", value = "Solo", tableOutput("solo")),
-                    tabPanel("Duo",value = "Duo", tableOutput("duo")),
-                    tabPanel("Squad", value = "Squad", tableOutput("squad"))
+        tabsetPanel(
+            tabPanel("Stats", tags$style(".tab-content { border-left: 1px solid #ddd; border-right: 1px solid #ddd; background-color: #fff; padding: 15px; }
+                       .nav-tabs { margin-bottom: 0;"),
+            tabsetPanel(id = "tabs",
+                        tabPanel("Solo", value = "Solo", tableOutput("solo")),
+                        tabPanel("Duo",value = "Duo", tableOutput("duo")),
+                        tabPanel("Squad", value = "Squad", tableOutput("squad"))
+            )),
+            tabPanel("Weapon Statistics", plotOutput("sidePlot")),
+            tabPanel("Death Plot", tags$style(".tab-content { height: auto; }"), plotOutput("distPlot")
         )
       )
-    )
-   
+   )
+ )
 )
 
 # Define server 
@@ -101,7 +106,7 @@ server <- function(input, output) {
       annotation_custom(bg, xmin = 0,  xmax = 800000, ymin = -800000, ymax = 0) +
       geom_point(mapping = aes(x = victim_position_x * (800000/812800), y = victim_position_y * (800000/812800)), color = "red", alpha = 0.04) + #0.008
       xlim(0, 800000) + scale_y_reverse(lim=c(800000, 0))
-  }, height = 400, width = 400) # size of map
+  }, height = 800, width = 800) # size of map
   
    output$solo <- renderTable({
     getPlayerStats(input$player_name, input$tabs)
@@ -114,6 +119,17 @@ server <- function(input, output) {
    output$squad <- renderTable({
      getPlayerStats(input$player_name, input$tabs)  
    })  
+   
+   output$sidePlot <- renderPlot({
+     ggplot(erangelData) + 
+       geom_bar(aes(x = killed_by), fill = "red") +
+       scale_y_continuous(expand = c(0,0)) +
+       theme(axis.text = element_text(size = 4),
+             axis.title = element_text(size = 6, face = "bold"),
+             axis.ticks.x = element_blank(),
+             axis.ticks.y = element_blank()) +
+       coord_flip()
+   }, height = 800)
 }
 
 # Run the application 
