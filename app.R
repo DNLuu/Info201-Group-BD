@@ -180,7 +180,7 @@ server <- function(input, output) {
        weaponData <- read.csv("data/vehicle.csv")
      }
      
-     ggplot(weaponData, aes(x = killed_by, y = freq)) + 
+     ggplot(weaponData, aes(x = killed_by, y = freq, fill =)) + 
        geom_bar(stat = "identity") +
        theme(axis.text = element_text(size = 12),
              axis.title = element_text(size = 12, face = "bold"),
