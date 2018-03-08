@@ -130,9 +130,7 @@ server <- function(input, output) {
       time <= maxtime
     )
     
-    timedata <- as.data.frame(timedata)
-    
-    map <- ggplot(data = timedata) +
+    ggplot(data = timedata) +
       theme(axis.title.x=element_blank(), axis.title.y=element_blank(),
             axis.text.x=element_blank(), axis.text.y=element_blank(),
             axis.ticks.x=element_blank(), axis.ticks.y=element_blank()) +
@@ -140,7 +138,6 @@ server <- function(input, output) {
       geom_point(mapping = aes(x = victim_position_x * (800000/812800), y = victim_position_y * (800000/812800)), color = "red", alpha = 0.04) + #0.008
       xlim(0, 800000) + scale_y_reverse(lim=c(800000, 0))
     
-    print(map)
   }, height = 1100, width = 1100) # size of map
   
    output$solo <- renderTable({
@@ -181,6 +178,7 @@ server <- function(input, output) {
      }
      
      ggplot(weaponData, aes(x = killed_by, y = freq, fill = killed_by)) + 
+       ggtitle(input$weaponType) + 
        geom_bar(stat = "identity") +
        theme(axis.text = element_text(size = 12),
              axis.title = element_text(size = 12, face = "bold"),
