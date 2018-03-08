@@ -41,8 +41,8 @@ getPlayerStats <- function(playername, mode) {
     Stats_Player$Average_Time_Survived <- paste(seconds_to_period(round(mean(Stats_Filtered$player_survive_time), digits = 0)))
     colnames(Stats_Player) <- c("Games Played", "Games Won", "Placed Top 5", "Placed Top 10", "Most Kills",
                                 "Average Kills", "Average Damage", "Average Assists", "Average Distance Tavelled", "Average Time Survived")
-    return(Stats_Player)
   }
+   return(Stats_Player)
 }
 
 # Define UI 
