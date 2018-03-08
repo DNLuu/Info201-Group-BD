@@ -1,0 +1,8 @@
+README.ME FOR PUBG STATISTICS
+https://briangf.shinyapps.io/Info201-Group-BD/
+
+PlayerUnknown’s Battlegrounds (PUBG) is a battle royale shooter video game where up to one hundred players fight for survival in a battle royale. The last player remaining wins. Players jump from an airplane over various parts of the map, then scavenge for weapons and supplies to fight each other. 
+
+The dataset comes from over 720,000 online matches of PUBG. For each match, there is data such as a list of players, and for every players there is information such as how many kills the player scored, total damage dealt by that player, the time that the player died, how they died, the position where they died, who killed them, and the position of their killer. All locations are described as a set of X and Y coordinates.
+
+This app will provide users with statistics taken from a sample of 5,000 user matches. It will provide summary statistics such as games won, games played, number of times the user placed top 5 or top 10 in their match, average kills, and other various information. The user will be able to filter this information depending on gamemode and playername. Allowing them to search for their personal solo, duo, or squad wins. The app will also show statistics on the various methods of death, comparing the number of deaths by each category in a bar graph. This graph will give the user a visualization of which weapons are the best to use in the game. The plot will begin providing information based on categorization such as melee, snipers, vehicles, and more. They will also be able to specify specific weapon type which will provide information on number of deaths from that weapon in our sample.

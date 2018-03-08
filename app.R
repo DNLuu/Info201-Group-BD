@@ -6,9 +6,10 @@ library("grid")
 library(lubridate)
 library(plotly)
 
-Stats <- read.csv("Stats.csv", stringsAsFactors = FALSE) 
-erangelData <- read.csv("data_subset.csv")
+Stats <- read.csv("Stats_Better.csv", stringsAsFactors = FALSE, encoding = 'UTF-8', fileEncoding = 'ISO8859-1')
+erangelData <- read.csv("data_subset.csv", stringsAsFactors = FALSE, encoding = 'UTF-8', fileEncoding = 'ISO8859-1')
 
+#Function that filters and gathers data on selected user.
 getPlayerStats <- function(playername, mode) {
   if (mode == "Squad") {
     size <- 4
@@ -51,25 +52,8 @@ ui <- fluidPage(
    
    # Application title
    shinyUI(navbarPage("PUBG Statistics!",
-                      tabPanel("Map",
    
-          sidebarLayout(
-            sidebarPanel(
-              tags$style(".well {background-color:#fff; 
-                               border-top: 3px solid #eda338;}"),
-              sliderInput("time", "Time In Game (in seconds):",
-                          60, 2201, value = c(100, 1300)),
-              radioButtons("mapColor", "Map Color:", 
-                           choices = c("Color", "Black & White"))
-            ),
-            
-            # Show a plot of the generated distribution
-            mainPanel(
-              plotOutput("distPlot")
-            )
-         )
-       ),
-       tabPanel("Weapon Statistics", 
+          tabPanel("Weapon Statistics", 
                 sidebarPanel(
                   tags$style(".well {background-color:#fff; 
                              border-top: 3px solid #eda338;}"),
@@ -96,6 +80,7 @@ ui <- fluidPage(
                             "Find Player Stats. (Select or search players name)", 
                             choices = unique(Stats$player_name))
             ),
+            #Shows tables under spcified tabs
             mainPanel(
                 tabsetPanel(id = "tabs",
                             tabPanel("Solo", value = "Solo", tableOutput("solo")),
@@ -109,37 +94,7 @@ ui <- fluidPage(
 
 # Define server 
 server <- function(input, output) {
-   
-  output$distPlot <- renderPlot({
-    imgColor <- readPNG("erangel.PNG")
-    imgBW <- readPNG("erangelBW.PNG")
-    
-    if (input$mapColor == "Color") {
-      img <- imgColor
-    } else {
-      img <- imgBW
-    }
-    
-    bg <- rasterGrob(img, interpolate = FALSE, width=unit(1,"npc"), height=unit(1,"npc"))
-    
-    mintime <- input$time[1]
-    maxtime <- input$time[2]
-    
-    timedata <- erangelData %>% filter(
-      time >= mintime,
-      time <= maxtime
-    )
-    
-    ggplot(data = timedata) +
-      theme(axis.title.x=element_blank(), axis.title.y=element_blank(),
-            axis.text.x=element_blank(), axis.text.y=element_blank(),
-            axis.ticks.x=element_blank(), axis.ticks.y=element_blank()) +
-      annotation_custom(bg, xmin = 0,  xmax = 800000, ymin = -800000, ymax = 0) +
-      geom_point(mapping = aes(x = victim_position_x * (800000/812800), y = victim_position_y * (800000/812800)), color = "red", alpha = 0.04) + #0.008
-      xlim(0, 800000) + scale_y_reverse(lim=c(800000, 0))
-    
-  }, height = 1100, width = 1100) # size of map
-  
+   #Creates Tables depending on user input
    output$solo <- renderTable({
     getPlayerStats(input$player_name, input$tabs)
    })
