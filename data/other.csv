@@ -1,6 +1,5 @@
-"","killed_by","freq"
-"1","Bluezone",269
-"2","Down and Out",831
-"3","Drown",22
-"4","Falling",60
-"5","Grenade",93
+"","X","killed_by","freq"
+"1",1,"Bluezone",269
+"3",3,"Drown",22
+"4",4,"Falling",60
+"5",5,"Grenade",93
