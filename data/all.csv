@@ -1,52 +1,10 @@
 "","killed_by","freq"
-"1","AKM",401
-"2","AUG",2
-"3","AWM",14
-"4","Bluezone",269
-"5","Boat",2
-"6","Buggy",3
-"7","Crossbow",13
-"8","Crowbar",4
-"9","Dacia",8
-"10","death.Buff_FireDOT_C",3
-"11","death.ProjMolotov_DamageField_C",3
-"12","death.WeapSawnoff_C",4
-"13","Down and Out",831
-"14","DP-28",20
-"15","Drown",22
-"16","Falling",60
-"17","Grenade",93
-"18","Groza",14
-"19","Hit by Car",57
-"20","Kar98k",129
-"21","M16A4",456
-"22","M24",16
-"23","M249",12
-"24","M416",536
-"25","Machete",5
-"26","Micro UZI",106
-"27","Mini 14",150
-"28","Mk14",1
-"29","Motorbike",4
-"30","Motorbike (SideCar)",6
-"31","P18C",6
-"32","P1911",47
-"33","P92",86
-"34","Pan",5
-"35","Pickup Truck",2
-"36","Punch",124
-"37","R1895",19
-"38","R45",1
-"39","RedZone",6
-"40","S12K",123
-"41","S1897",216
-"42","S686",150
-"43","SCAR-L",452
-"44","Sickle",3
-"45","SKS",127
-"46","Tommy Gun",72
-"47","Uaz",11
-"48","UMP9",255
-"49","Vector",35
-"50","VSS",11
-"51","Win94",5
+"1","Assault",773
+"2","DMR",277
+"3","Machine Gun",500
+"4","Melee",137
+"5","Other",1275
+"6","Pistol",158
+"7","Shotguns",499
+"8","Snipers",171
+"9","Vehicle",11

@@ -69,7 +69,27 @@ ui <- fluidPage(
             )
          )
        ),
-       tabPanel("Weapon Statistics", plotOutput("sidePlot")),
+       tabPanel("Weapon Statistics", 
+                sidebarPanel(
+                  tags$style(".well {background-color:#fff; 
+                             border-top: 3px solid #eda338;}"),
+                  selectInput("weaponType", "Weapon Type:", 
+                               choices = c("All",
+                                           "Assault",
+                                           "DMR",
+                                           "Machine Guns",
+                                           "Melee Weapons",
+                                           "Other Weapons",
+                                           "Pistols",
+                                           "Shotguns",
+                                           "Snipers",
+                                           "Vehicle"))
+                  ),
+                
+                # Show a plot of the weapons based on user input
+                mainPanel(
+                  plotOutput("weaponPlot")
+                )),
        tabPanel("Player Statistics",
             sidebarPanel(    
                 selectInput("player_name",
@@ -135,25 +155,37 @@ server <- function(input, output) {
      getPlayerStats(input$player_name, input$tabs)  
    })  
    
-   output$sidePlot <- renderPlot({
-     mintime <- input$time[1]
-     maxtime <- input$time[2]
+   output$weaponPlot <- renderPlot({
      
-     timedata <- erangelData %>% filter(
-       time >= mintime,
-       time <= maxtime
-     )
+     #chooses data based on user input
+     if(input$weaponType == "All") {
+       weaponData <- read.csv("data/all.csv")
+     } else if(input$weaponType == "Assault") {
+       weaponData <- read.csv("data/assault.csv")
+     } else if(input$weaponType == "DMR") {
+       weaponData <- read.csv("data/DMR.csv")
+     } else if(input$weaponType == "Melee Weapons") {
+         weaponData <- read.csv("data/melee.csv")
+     } else if(input$weaponType == "Machine Guns") {
+       weaponData <- read.csv("data/machinegun.csv")
+     } else if(input$weaponType == "Other Weapons") {
+       weaponData <- read.csv("data/other.csv")
+     } else if(input$weaponType == "Pistols") {
+       weaponData <- read.csv("data/pistol.csv")
+     } else if(input$weaponType == "Shotguns") {
+       weaponData <- read.csv("data/shotguns.csv")
+     } else if(input$weaponType == "Snipers") {
+       weaponData <- read.csv("data/snipers.csv")
+     } else if(input$weaponType == "Vehicle") {
+       weaponData <- read.csv("data/vehicle.csv")
+     }
      
-     timedata <- as.data.frame(timedata)
-     
-     ggplot(timedata) + 
-       geom_bar(aes(x = killed_by), fill = "red") +
-       scale_y_continuous(expand = c(0,0)) +
-       theme(axis.text = element_text(size = 4),
-             axis.title = element_text(size = 6, face = "bold"),
+     ggplot(weaponData, aes(x = killed_by, y = freq)) + 
+       geom_bar(stat = "identity") +
+       theme(axis.text = element_text(size = 12),
+             axis.title = element_text(size = 12, face = "bold"),
              axis.ticks.x = element_blank(),
-             axis.ticks.y = element_blank()) +
-       coord_flip()
+             axis.ticks.y = element_blank())
    }, height = 800)
 }
 
