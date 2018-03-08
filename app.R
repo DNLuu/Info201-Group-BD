@@ -67,7 +67,6 @@ ui <- fluidPage(
       
       # Show a plot of the generated distribution
       mainPanel(
-<<<<<<< HEAD
         tabsetPanel(
             tabPanel("Stats", tags$style(".tab-content { border-left: 1px solid #ddd; border-right: 1px solid #ddd; background-color: #fff; padding: 15px; }
                        .nav-tabs { margin-bottom: 0;"),
@@ -78,16 +77,6 @@ ui <- fluidPage(
             )),
             tabPanel("Weapon Statistics", plotOutput("sidePlot")),
             tabPanel("Death Plot", tags$style(".tab-content { height: auto; }"), plotOutput("distPlot")
-=======
-         fluidRow(
-            plotOutput("sidePlot")
-         ),
-         plotOutput("distPlot"),
-         tabsetPanel(id = "tabs",
-                    tabPanel("Solo", value = "Solo", tableOutput("solo")),
-                    tabPanel("Duo",value = "Duo", tableOutput("duo")),
-                    tabPanel("Squad", value = "Squad", tableOutput("squad"))
->>>>>>> 4d69b2fd46067ad58ddd9967e3d292b3d9b60743
         )
       )
    )
@@ -136,7 +125,6 @@ server <- function(input, output) {
    })  
    
    output$sidePlot <- renderPlot({
-<<<<<<< HEAD
      mintime <- input$time[1]
      maxtime <- input$time[2]
      
@@ -148,9 +136,6 @@ server <- function(input, output) {
      timedata <- as.data.frame(timedata)
      
      ggplot(timedata) + 
-=======
-     ggplot(erangelData) + 
->>>>>>> 4d69b2fd46067ad58ddd9967e3d292b3d9b60743
        geom_bar(aes(x = killed_by), fill = "red") +
        scale_y_continuous(expand = c(0,0)) +
        theme(axis.text = element_text(size = 4),
@@ -158,11 +143,7 @@ server <- function(input, output) {
              axis.ticks.x = element_blank(),
              axis.ticks.y = element_blank()) +
        coord_flip()
-<<<<<<< HEAD
    }, height = 800)
-=======
-   })
->>>>>>> 4d69b2fd46067ad58ddd9967e3d292b3d9b60743
 }
 
 # Run the application 
