@@ -31,10 +31,8 @@ getPlayerStats <- function(playername, mode) {
     Stats_Player$Most_Kills <- max(Stats_Filtered$player_kills)
     Stats_Player$Average_Assists <- round(mean(Stats_Filtered$player_assists), digits = 2)
     Stats_Player$Average_Damage <- round(mean(Stats_Filtered$player_dmg), digits = 2)
-    
     Stats_Filtered$Distance_Travelled <- mean(Stats_Filtered$player_dist_walk) + mean(Stats_Filtered$player_dist_ride)
     Distance <- round(mean(Stats_Filtered$Distance_Travelled), digits = 2)
-    
     Stats_Player$Average_Distance_Travelled <- paste(Distance,'m')
     Stats_Player$Top_10 <- sum(Stats_Filtered$team_placement <= 10)
     Stats_Player$Top_5 <- sum(Stats_Filtered$team_placement <= 5)
