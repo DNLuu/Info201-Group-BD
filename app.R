@@ -47,48 +47,44 @@ getPlayerStats <- function(playername, mode) {
 
 # Define UI 
 ui <- fluidPage(
+  includeCSS("styles.css"),
    
    # Application title
-   titlePanel("PUBG Statistics"),
+   shinyUI(navbarPage("PUBG Statistics!",
+                      tabPanel("Map",
    
-   shinyUI(navbarPage("Hello!",
-                      tabPanel("Map"),
-                      tabPanel("Weapon Statistics"),
-                      tabPanel("Player Statistics")
-   )),
-   
-   includeCSS("styles.css"),
-   
-    sidebarLayout(
-      sidebarPanel(
-         selectInput("player_name",
-                    "Find Player Stats. (Select or search players name)", 
-                    choices = unique(Stats$player_name)),
-
-        tags$style(".well {background-color:#fff; 
-                         border-top: 3px solid #eda338;}"),
-        sliderInput("time", "Time In Game (in seconds):",
-                    60, 2201, value = c(100, 1300)),
-        radioButtons("mapColor", "Map Color:", 
-                     choices = c("Color", "Black & White"))
-      ),
-      
-      # Show a plot of the generated distribution
-      mainPanel(
-        tabsetPanel(
-            tabPanel("Stats", tags$style(".tab-content { border-left: 1px solid #ddd; border-right: 1px solid #ddd; background-color: #fff; padding: 15px; }
-                       .nav-tabs { margin-bottom: 0;"),
-            tabsetPanel(id = "tabs",
-                        tabPanel("Solo", value = "Solo", tableOutput("solo")),
-                        tabPanel("Duo",value = "Duo", tableOutput("duo")),
-                        tabPanel("Squad", value = "Squad", tableOutput("squad"))
-            )),
-            tabPanel("Weapon Statistics", plotOutput("sidePlot")),
-            tabPanel("Death Plot", tags$style(".tab-content { height: auto; }"), plotOutput("distPlot")
-        )
-      )
-   )
- )
+          sidebarLayout(
+            sidebarPanel(
+              tags$style(".well {background-color:#fff; 
+                               border-top: 3px solid #eda338;}"),
+              sliderInput("time", "Time In Game (in seconds):",
+                          60, 2201, value = c(100, 1300)),
+              radioButtons("mapColor", "Map Color:", 
+                           choices = c("Color", "Black & White"))
+            ),
+            
+            # Show a plot of the generated distribution
+            mainPanel(
+              plotOutput("distPlot")
+            )
+         )
+       ),
+       tabPanel("Weapon Statistics", plotOutput("sidePlot")),
+       tabPanel("Player Statistics",
+            sidebarPanel(    
+                selectInput("player_name",
+                            "Find Player Stats. (Select or search players name)", 
+                            choices = unique(Stats$player_name))
+            ),
+            mainPanel(
+                tabsetPanel(id = "tabs",
+                            tabPanel("Solo", value = "Solo", tableOutput("solo")),
+                            tabPanel("Duo",value = "Duo", tableOutput("duo")),
+                            tabPanel("Squad", value = "Squad", tableOutput("squad"))
+                )
+            )
+       )
+  ))
 )
 
 # Define server 
