@@ -4,6 +4,7 @@ library("ggplot2")
 library("png")
 library("grid")
 library(lubridate)
+library(plotly)
 
 Stats <- read.csv("Stats.csv", stringsAsFactors = FALSE) 
 erangelData <- read.csv("data_subset.csv")
@@ -99,14 +100,17 @@ server <- function(input, output) {
     
     timedata <- as.data.frame(timedata)
     
-    ggplot(data = timedata) +
+    map <- ggplot(data = timedata) +
       theme(axis.title.x=element_blank(), axis.title.y=element_blank(),
             axis.text.x=element_blank(), axis.text.y=element_blank(),
             axis.ticks.x=element_blank(), axis.ticks.y=element_blank()) +
       annotation_custom(bg, xmin = 0,  xmax = 800000, ymin = -800000, ymax = 0) +
       geom_point(mapping = aes(x = victim_position_x * (800000/812800), y = victim_position_y * (800000/812800)), color = "red", alpha = 0.04) + #0.008
       xlim(0, 800000) + scale_y_reverse(lim=c(800000, 0))
-  }, height = 800, width = 800) # size of map
+    
+    map <- plotly(map)
+    print(map)
+  }, height = 1100, width = 1100) # size of map
   
    output$solo <- renderTable({
     getPlayerStats(input$player_name, input$tabs)
@@ -121,7 +125,17 @@ server <- function(input, output) {
    })  
    
    output$sidePlot <- renderPlot({
-     ggplot(erangelData) + 
+     mintime <- input$time[1]
+     maxtime <- input$time[2]
+     
+     timedata <- erangelData %>% filter(
+       time >= mintime,
+       time <= maxtime
+     )
+     
+     timedata <- as.data.frame(timedata)
+     
+     ggplot(timedata) + 
        geom_bar(aes(x = killed_by), fill = "red") +
        scale_y_continuous(expand = c(0,0)) +
        theme(axis.text = element_text(size = 4),
